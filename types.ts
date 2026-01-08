@@ -5,7 +5,8 @@ export enum ViewType {
   FAVORITES = 'favorites',
   DETAILS = 'details',
   PROFILE = 'profile',
-  FILTERS = 'filters'
+  FILTERS = 'filters',
+  AI_ADVISOR = 'ai_advisor'
 }
 
 export interface Property {
