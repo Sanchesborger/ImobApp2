@@ -1,0 +1,7 @@
+{
+  "name": "ImobApp - Real Estate Portal",
+  "description": "A comprehensive real estate application for browsing, filtering, and favoriting premium properties in Brazil.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
