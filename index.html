@@ -48,18 +48,20 @@
         #root { min-height: 100vh; }
         .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "@google/genai": "https://esm.sh/@google/genai"
-  }
-}
-</script>
+    <script type="importmap">
+    {
+      "imports": {
+        "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+        "react/": "https://esm.sh/react@^19.2.3/",
+        "react": "https://esm.sh/react@^19.2.3",
+        "@google/genai": "https://esm.sh/@google/genai"
+      }
+    }
+    </script>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display antialiased">
     <div id="root"></div>
+    <!-- Script de entrada vital para o funcionamento do app -->
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>

@@ -18,12 +18,20 @@ const App: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem('imob_favorites');
-    if (saved) setFavorites(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem('imob_favorites');
+      if (saved) setFavorites(JSON.parse(saved));
+    } catch (e) {
+      console.warn("LocalStorage access failed:", e);
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('imob_favorites', JSON.stringify(favorites));
+    try {
+      localStorage.setItem('imob_favorites', JSON.stringify(favorites));
+    } catch (e) {
+      console.warn("LocalStorage save failed:", e);
+    }
   }, [favorites]);
 
   useEffect(() => {
@@ -53,6 +61,7 @@ const App: React.FC = () => {
     setIsTyping(true);
 
     try {
+      // Inicializar IA apenas quando necessário
       const genAI = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await genAI.models.generateContent({
         model: "gemini-3-flash-preview",
@@ -65,6 +74,7 @@ const App: React.FC = () => {
       const aiText = response.text || "Desculpe, tive um problema ao processar sua consulta.";
       setChatMessages(prev => [...prev, { role: 'ai', text: aiText }]);
     } catch (error) {
+      console.error("Gemini API Error:", error);
       setChatMessages(prev => [...prev, { role: 'ai', text: "Ocorreu um erro ao conectar com o consultor. Tente novamente mais tarde." }]);
     } finally {
       setIsTyping(false);
@@ -132,7 +142,6 @@ const App: React.FC = () => {
           </button>
         </div>
         
-        {/* Banner Inteligente Gemini */}
         <div className="px-4 pb-4">
           <div 
             onClick={() => navigateTo(ViewType.AI_ADVISOR)}
@@ -145,7 +154,6 @@ const App: React.FC = () => {
             <div className="z-10 size-10 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined animate-pulse">auto_awesome</span>
             </div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
           </div>
 
           <div 
@@ -204,7 +212,7 @@ const App: React.FC = () => {
               <span className="material-symbols-outlined text-primary text-5xl">auto_awesome</span>
             </div>
             <div className="space-y-2">
-              <h3 className="font-bold text-lg">Como posso te ajudar hoje?</h3>
+              <h3 className="font-bold text-lg text-text-main-light dark:text-text-main-dark">Como posso te ajudar hoje?</h3>
               <p className="text-sm text-gray-500">Ex: "Qual o melhor bairro para quem trabalha na Faria Lima?"</p>
             </div>
           </div>
@@ -237,9 +245,9 @@ const App: React.FC = () => {
           type="text" 
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && askAi()}
+          onKeyDown={(e) => e.key === 'Enter' && askAi()}
           placeholder="Digite sua dúvida..."
-          className="flex-1 bg-gray-100 dark:bg-background-dark border-none rounded-xl px-4 py-3 text-sm focus:ring-primary"
+          className="flex-1 bg-gray-100 dark:bg-background-dark border-none rounded-xl px-4 py-3 text-sm focus:ring-primary dark:text-white"
         />
         <button 
           onClick={askAi}
@@ -312,7 +320,6 @@ const App: React.FC = () => {
                 <span className="material-symbols-outlined text-primary">chat</span>
              </div>
           </div>
-          {/* Action Bar Localizada para Mobile */}
           <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md p-4 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 flex gap-3 z-50 rounded-t-3xl shadow-xl pb-safe">
             <button className="flex-1 h-12 rounded-xl border border-primary text-primary font-bold active:bg-primary/10 transition-colors">Ligar</button>
             <button className="flex-[2] h-12 rounded-xl bg-primary text-background-dark font-bold shadow-lg shadow-primary/20">Agendar Visita</button>
@@ -362,7 +369,6 @@ const App: React.FC = () => {
         {renderContent()}
       </div>
 
-      {/* Nav Fixa Bottom Centralizada */}
       {[ViewType.HOME, ViewType.FAVORITES].includes(currentView) && (
         <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/95 dark:bg-surface-dark/95 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 pb-safe pt-2 z-40 rounded-t-3xl shadow-[0_-8px_30px_rgb(0,0,0,0.06)]">
           <div className="flex justify-around items-center px-2 pb-2">
